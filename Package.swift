@@ -9,8 +9,8 @@ let package = Package(
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "composable-google-mobile-ads",
-            targets: ["composable-google-mobile-ads"]),
+            name: "ComposableGoogleMobileAds",
+            targets: ["ComposableGoogleMobileAds"]),
     ],
     dependencies: [
       .package(url: "https://github.com/googleads/swift-package-manager-google-mobile-ads.git", from: "11.13.0"),
@@ -20,7 +20,7 @@ let package = Package(
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "composable-google-mobile-ads",
+            name: "ComposableGoogleMobileAds",
             dependencies: [
               .product(name: "GoogleMobileAds", package: "swift-package-manager-google-mobile-ads"),
               .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
