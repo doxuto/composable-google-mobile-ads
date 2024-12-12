@@ -13,6 +13,7 @@ public struct GoogleAdsRewardedClient: Sendable {
   public var delegate: @Sendable (String) -> AsyncThrowingStream<DelegateEvent, Error> = {
     _ in .finished()
   }
+  public var presentRewardedAds: () async throws -> Void
   
   @CasePathable
    public enum DelegateEvent {
@@ -61,13 +62,14 @@ public struct GoogleAdsRewardedClient: Sendable {
 }
 
 extension GoogleAdsRewardedClient: DependencyKey {
+  nonisolated(unsafe) fileprivate static var rewardedAd: GADRewardedAd!
   public static let liveValue: GoogleAdsRewardedClient = {
     Self { adUnitID in
       return AsyncThrowingStream<DelegateEvent, Error> { [adUnitID] continuation in
         Task {
           let delegate = Delegate(continuation: continuation)
           do {
-            let rewardedAd = try await GADRewardedAd.load(withAdUnitID: adUnitID, request: .init())
+            rewardedAd = try await GADRewardedAd.load(withAdUnitID: adUnitID, request: .init())
             rewardedAd.fullScreenContentDelegate = delegate
           } catch {
             continuation.finish(throwing: error)
@@ -78,6 +80,19 @@ extension GoogleAdsRewardedClient: DependencyKey {
           }
         }
       }
+    } presentRewardedAds: {
+      guard let rewardedAd = Self.rewardedAd else {
+        throw GoogleAdError.notFoundAd
+      }
+      await withCheckedContinuation { continuation in
+        rewardedAd.present(fromRootViewController: nil) {
+          continuation.resume()
+        }
+      }
     }
   }()
+}
+
+public enum GoogleAdError: Error, Sendable {
+  case notFoundAd
 }
