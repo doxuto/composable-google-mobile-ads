@@ -30,7 +30,7 @@ To integrate `ComposableGoogleMobileAds` into your project, use Swift Package Ma
 
 ## Requirements
 
-- **iOS**: 14.0+
+- **iOS**: 13.0+
 - **Swift**: 5.5+
 - **Composable Architecture**: Latest version supported by your project.
 
