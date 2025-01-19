@@ -47,7 +47,8 @@ public struct BookDetail: Sendable {
   @Dependency(\.adClient) var adClient
 ....
  public enum Action {
- case adFullscreenDelegate(Result<AsyncThrowingStream<AdClient.DelegateEvent, Error>, Error>)
+  ....
+  case adFullscreenDelegate(Result<AsyncThrowingStream<AdClient.DelegateEvent, Error>, Error>)
  }
 
  public var body: some ReducerOf<Self> {
@@ -55,6 +56,17 @@ public struct BookDetail: Sendable {
     Reduce { state, action in
       switch action {
         ...
+        case .presentInterstitialAd:
+          return .run { [interstitialAdUnit = state.interstitialAdUnit] send in
+          await send(
+            .adFullscreenDelegate(
+              await Result {
+                try await adClient.interstitialClient.present(interstitialAdUnit)
+              }
+            )
+          )
+        }
+
         case .adFullscreenDelegate(.success(let result)):
           return .run { send in
             do {
