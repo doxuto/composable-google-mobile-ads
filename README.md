@@ -1,4 +1,4 @@
-# Composable Google Mobile Ads
+# Composable Google Mobile Ads SWiftUI/ UIKit
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
